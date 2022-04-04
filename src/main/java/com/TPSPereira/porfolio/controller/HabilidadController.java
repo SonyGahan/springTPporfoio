@@ -1,7 +1,7 @@
 package com.TPSPereira.porfolio.controller;
 
-import com.TPSPereira.porfolio.model.Experiencia;
-import com.TPSPereira.porfolio.service.IExperienciaService;
+import com.TPSPereira.porfolio.model.Habilidad;
+import com.TPSPereira.porfolio.service.IHabilidadService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,99 +20,97 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "*")
-public class ExperienciaController {
+public class HabilidadController {
   @Autowired
-  private IExperienciaService iexperienciaServ;  
+  private IHabilidadService ihabilidadServ;  
   
-  @GetMapping ("/experiencia")
-    public List<Experiencia> getExperiencias(){
-        return iexperienciaServ.getExperiencias();
+  @GetMapping ("/habilidad")
+    public List<Habilidad> getHabilidades(){
+        return ihabilidadServ.getHabilidades();
     }
     
     
-  @GetMapping ("/experiencia/{id}")
-    public ResponseEntity<?> getExperiencia(@PathVariable Long id){
-        Experiencia experiencia = null;
+  @GetMapping ("/habilidad/{id}")
+    public ResponseEntity<?> getHabilidad(@PathVariable Long id){
+        Habilidad habilidad = null;
         Map<String, Object> response = new HashMap<String, Object>();
         
         try{
-            experiencia = iexperienciaServ.findExperiencia(id);
+            habilidad = ihabilidadServ.findHabilidad(id);
         }catch(DataAccessException e) {
 		response.put("mensaje", "Error al realizar la consulta en la base de datos");
 		response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if(experiencia == null) {
-		response.put("mensaje", "La experiencia ID: ".concat(id.toString().concat(" ").concat("no existe en la base de datos!")));
+        if(habilidad == null) {
+		response.put("mensaje", "La habilidad del ID: ".concat(id.toString().concat(" ").concat("no existe en la base de datos!")));
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Experiencia>(experiencia, HttpStatus.OK);
+		return new ResponseEntity<Habilidad>(habilidad, HttpStatus.OK);
     }
 
     
-  @PostMapping ("/experiencia/agregar")
-    public ResponseEntity<?> createExperiencia(@RequestBody Experiencia experiencia){
-        Experiencia experiencianew = null;
+  @PostMapping ("/habilidad/agregar")
+    public ResponseEntity<?> createHabilidad(@RequestBody Habilidad habilidad){
+        Habilidad habilidadnew = null;
         Map<String, Object> response = new HashMap<String, Object>();
 
         try {
-            experiencianew = iexperienciaServ.saveExperiencia(experiencia);
+            habilidadnew = ihabilidadServ.saveHabilidad(habilidad);
         } catch (DataAccessException e) {
             response.put("mensaje", "Error al realizar el insert en la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        response.put("mensaje", "La experiencia ha sido creada con éxito!");
-        response.put("experiencia", experiencianew);
+        response.put("mensaje", "La habilidad ha sido creada con éxito!");
+        response.put("habilidad", habilidadnew);
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
     }
      
     
-  @DeleteMapping ("/experiencia/eliminar/{id}")
-    public ResponseEntity<?> deleteExperiencia(@PathVariable Long id){
+  @DeleteMapping ("/habilidad/eliminar/{id}")
+    public ResponseEntity<?> deleteHabilidad(@PathVariable Long id){
         Map<String, Object> response = new HashMap<String, Object>();
         try {
-            Experiencia experiencia = iexperienciaServ.findExperiencia(id);
+            Habilidad habilidad = ihabilidadServ.findHabilidad(id);
 
-            iexperienciaServ.deleteExperiencia(id);
+        ihabilidadServ.deleteHabilidad(id);
         } catch (DataAccessException e) {
-            response.put("mensaje", "Error al eliminar la experiencia en la base de datos");
+            response.put("mensaje", "Error al eliminar la habilidad en la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        response.put("mensaje", "La experiencia ha sido eliminada con éxito!");
+        response.put("mensaje", "La habilidad ha sido eliminada con éxito!");
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK); 
     }     
    
     
-  @PutMapping ("/experiencia/editar/{id}")
+  @PutMapping ("/habilidad/editar/{id}")
     public ResponseEntity<?> editExperiencia (@PathVariable Long id,
-                                      @RequestBody Experiencia experienciaEdit
+                                      @RequestBody Habilidad habilidadEdit
                                      ){
         Map<String, Object> response = new HashMap<String, Object>();
-        Experiencia experiencia = iexperienciaServ.findExperiencia(id);
-        Experiencia experienciaUpdated = null;
+        Habilidad habilidad = ihabilidadServ.findHabilidad(id);
+        Habilidad habilidadUpdated = null;
         
-        if (experiencia == null) {
-            response.put("mensaje", "Error, no se puede editar, la experiencia ID: ".concat(id.toString().concat(" ").concat("no existe en la base de datos!")));
+        if (habilidad == null) {
+            response.put("mensaje", "Error, no se puede editar, la habilidad del ID: ".concat(id.toString().concat(" ").concat("no existe en la base de datos!")));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
         }
         
        try{ 
-           experiencia.setNombre(experienciaEdit.getNombre());
-           experiencia.setDetalle(experienciaEdit.getDetalle());
-           experiencia.setFinicio(experienciaEdit.getFinicio());
-           experiencia.setFfinal(experienciaEdit.getFfinal());
-           experiencia.setPerfil(experienciaEdit.getPerfil());
+           habilidad.setPrograma(habilidadEdit.getPrograma());
+           habilidad.setPorcentaje(habilidadEdit.getPorcentaje());
+          
        
-       experienciaUpdated = iexperienciaServ.saveExperiencia(experiencia);
+       habilidadUpdated = ihabilidadServ.saveHabilidad(habilidad);
        }catch(DataAccessException e) {
-			response.put("mensaje", "Error al actualizar la experiencia en la base de datos");
+			response.put("mensaje", "Error al actualizar la habilidad en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        response.put("mensaje", "La experiencia ha sido actualizada con éxito!");
-        response.put("experiencia", experienciaUpdated);
+        response.put("mensaje", "La habilidad ha sido actualizada con éxito!");
+        response.put("habilidad", habilidadUpdated);
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
     }
 }

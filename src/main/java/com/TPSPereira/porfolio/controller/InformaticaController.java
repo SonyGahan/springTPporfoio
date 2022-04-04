@@ -1,7 +1,7 @@
 package com.TPSPereira.porfolio.controller;
 
-import com.TPSPereira.porfolio.model.Experiencia;
-import com.TPSPereira.porfolio.service.IExperienciaService;
+import com.TPSPereira.porfolio.model.Informatica;
+import com.TPSPereira.porfolio.service.IInformaticaService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,99 +20,96 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "*")
-public class ExperienciaController {
+public class InformaticaController {
   @Autowired
-  private IExperienciaService iexperienciaServ;  
+  private IInformaticaService iinformaticaServ;  
   
-  @GetMapping ("/experiencia")
-    public List<Experiencia> getExperiencias(){
-        return iexperienciaServ.getExperiencias();
+  @GetMapping ("/informatica")
+    public List<Informatica> getInformaticas(){
+        return iinformaticaServ.getInformaticas();
     }
     
     
-  @GetMapping ("/experiencia/{id}")
-    public ResponseEntity<?> getExperiencia(@PathVariable Long id){
-        Experiencia experiencia = null;
+  @GetMapping ("/informatica/{id}")
+    public ResponseEntity<?> getInformatica(@PathVariable Long id){
+        Informatica informatica = null;
         Map<String, Object> response = new HashMap<String, Object>();
         
         try{
-            experiencia = iexperienciaServ.findExperiencia(id);
+            informatica = iinformaticaServ.findInformatica(id);
         }catch(DataAccessException e) {
 		response.put("mensaje", "Error al realizar la consulta en la base de datos");
 		response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if(experiencia == null) {
-		response.put("mensaje", "La experiencia ID: ".concat(id.toString().concat(" ").concat("no existe en la base de datos!")));
+        if(informatica == null) {
+		response.put("mensaje", "La fomacion informatica del ID: ".concat(id.toString().concat(" ").concat("no existe en la base de datos!")));
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Experiencia>(experiencia, HttpStatus.OK);
+		return new ResponseEntity<Informatica>(informatica, HttpStatus.OK);
     }
 
     
-  @PostMapping ("/experiencia/agregar")
-    public ResponseEntity<?> createExperiencia(@RequestBody Experiencia experiencia){
-        Experiencia experiencianew = null;
+  @PostMapping ("/informatica/agregar")
+    public ResponseEntity<?> createInformatica(@RequestBody Informatica informatica){
+        Informatica informaticanew = null;
         Map<String, Object> response = new HashMap<String, Object>();
 
         try {
-            experiencianew = iexperienciaServ.saveExperiencia(experiencia);
+            informaticanew = iinformaticaServ.saveInformatica(informatica);
         } catch (DataAccessException e) {
             response.put("mensaje", "Error al realizar el insert en la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        response.put("mensaje", "La experiencia ha sido creada con éxito!");
-        response.put("experiencia", experiencianew);
+        response.put("mensaje", "La formacion informatica ha sido creada con éxito!");
+        response.put("informatica", informaticanew);
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
     }
      
     
-  @DeleteMapping ("/experiencia/eliminar/{id}")
-    public ResponseEntity<?> deleteExperiencia(@PathVariable Long id){
+  @DeleteMapping ("/informatica/eliminar/{id}")
+    public ResponseEntity<?> deleteInformatica(@PathVariable Long id){
         Map<String, Object> response = new HashMap<String, Object>();
         try {
-            Experiencia experiencia = iexperienciaServ.findExperiencia(id);
+            Informatica informatica = iinformaticaServ.findInformatica(id);
 
-            iexperienciaServ.deleteExperiencia(id);
+            iinformaticaServ.deleteInformatica(id);
         } catch (DataAccessException e) {
-            response.put("mensaje", "Error al eliminar la experiencia en la base de datos");
+            response.put("mensaje", "Error al eliminar la formacion informatica en la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        response.put("mensaje", "La experiencia ha sido eliminada con éxito!");
+        response.put("mensaje", "La formacion informatica ha sido eliminada con éxito!");
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK); 
     }     
    
     
-  @PutMapping ("/experiencia/editar/{id}")
-    public ResponseEntity<?> editExperiencia (@PathVariable Long id,
-                                      @RequestBody Experiencia experienciaEdit
+  @PutMapping ("/informatica/editar/{id}")
+    public ResponseEntity<?> editInformatica (@PathVariable Long id,
+                                      @RequestBody Informatica informaticaEdit
                                      ){
         Map<String, Object> response = new HashMap<String, Object>();
-        Experiencia experiencia = iexperienciaServ.findExperiencia(id);
-        Experiencia experienciaUpdated = null;
+        Informatica informatica = iinformaticaServ.findInformatica(id);
+        Informatica informaticaUpdated = null;
         
-        if (experiencia == null) {
-            response.put("mensaje", "Error, no se puede editar, la experiencia ID: ".concat(id.toString().concat(" ").concat("no existe en la base de datos!")));
+        if (informatica == null) {
+            response.put("mensaje", "Error, no se puede editar, la formacion del ID: ".concat(id.toString().concat(" ").concat("no existe en la base de datos!")));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
         }
         
        try{ 
-           experiencia.setNombre(experienciaEdit.getNombre());
-           experiencia.setDetalle(experienciaEdit.getDetalle());
-           experiencia.setFinicio(experienciaEdit.getFinicio());
-           experiencia.setFfinal(experienciaEdit.getFfinal());
-           experiencia.setPerfil(experienciaEdit.getPerfil());
+           informatica.setNombre(informaticaEdit.getNombre());
+           informatica.setDescripcion(informaticaEdit.getDescripcion());
        
-       experienciaUpdated = iexperienciaServ.saveExperiencia(experiencia);
+       informaticaUpdated = iinformaticaServ.saveInformatica(informatica);
        }catch(DataAccessException e) {
-			response.put("mensaje", "Error al actualizar la experiencia en la base de datos");
+			response.put("mensaje", "Error al actualizar la formacion informatica en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        response.put("mensaje", "La experiencia ha sido actualizada con éxito!");
-        response.put("experiencia", experienciaUpdated);
+        response.put("mensaje", "La formacion informatica ha sido actualizada con éxito!");
+        response.put("informatica", informaticaUpdated);
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
     }
 }
